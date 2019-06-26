@@ -1,6 +1,12 @@
+// 0. prev steps
+// a) do npm install
+// b) nodemon server.js
+// ensure you have the movies collection in a movies database in your mongo
+
+// 1. server setup
 const express = require("express")
 const mongoose = require("mongoose")
-const hbs     = require('hbs');
+const hbs = require('hbs');
 const app = express()
 const PORT = 3000
 mongoose.connect('mongodb://localhost/movies');
@@ -13,6 +19,7 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'hbs');
 hbs.registerPartials(__dirname + '/views/partials');
 
+// 2. mongoose models and schemas
 const schema = {
     title: String,
     year: Number,
@@ -25,6 +32,8 @@ const schema = {
 const Movie = mongoose.model('movie', schema);
 const Cat = mongoose.model('cat', { name: String });
 
+// 3. routes
+// this is an endpoint
 app.get("/new-cat", (req, res) => {
     log()
 
@@ -36,6 +45,7 @@ app.get("/new-cat", (req, res) => {
         .catch()
 })
 
+// this is an endpoint
 app.get("/add-new-movie-test", (req, res) => {
     log()
     Movie.create({
@@ -76,6 +86,7 @@ app.get("/moviesByRating/:rating", (req, res) => {
     });
 })
 
+// this is an endpoint
 app.get("/movie-rates", (req, res) => {
     Movie.find({ year: { $eq: 1980 } }, (err, movies) => {
         let moviesOutput = movies
@@ -88,6 +99,7 @@ app.get("/movie-rates", (req, res) => {
     });
 })
 
+// this is an endpoint
 app.get('/hello', (req, res, next) => {
     res.send(`
       <!doctype html>
@@ -101,25 +113,6 @@ app.get('/hello', (req, res, next) => {
       </html>
     `);
 });
-
-// here we are entering in home, aka. http://localhost:3000/
-/* 
-
-app.get('/', (req, res, next) => {
-    // here we are crafting the data that you are about to pass to the handlebars view
-    // for its processing
-    let data = {
-        name: "Ironhacker",
-        bootcamp: "IronHack WebDev"
-    };
-
-    // here you send the data to the index view living in the /views folder
-    // renders the computation of the handlebars + the data
-    // and sends back the result to the requester (in this case, the browser :) )
-    res.render('index', data);
-});
-
-*/
 
 app.get('/agus', (req, res, next) => {
     let data = { nombre: "danielito2", value: Math.random() + 100 }
@@ -182,12 +175,29 @@ app.get("/players", (req, res) => {
         },
     ];
 
-    res.render("players", {players})
-
+    res.render("players", { players })
 })
+
+/*
+
+// here we are entering in home, aka. http://localhost:3000/
+app.get('/', (req, res, next) => {
+    // here we are crafting the data that you are about to pass to the handlebars view
+    // for its processing
+    let data = {
+        name: "Ironhacker",
+        bootcamp: "IronHack WebDev"
+    };
+
+    // here you send the data to the index view living in the /views folder
+    // renders the computation of the handlebars + the data
+    // and sends back the result to the requester (in this case, the browser :) )
+    res.render('index', data);
+});
+*/
 
 app.listen(PORT)
 
 function log() {
-    console.log("hola")
+    console.log("you can call this from any endpoint")
 }
