@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+</head>
+
+<body>
+    <h1>All the movies from {{year}}, average rate was {{mediaEnSpanish}}</h1>
+    {{!-- {{pelis}} --}}
+
+    {{#if isEditor}}
+        <h1>Control panel for editors only</h1>
+        <section>
+            <button>control 1</button>
+            <button>control 1</button>
+        </section>
+    {{/if}}
+
+    {{#if isAdmin}}
+        <h1>Control panel for admins only</h1>
+        <section>
+            <button>control 1</button>
+            <button>control 1</button>
+            <button>control 1</button>
+            <button>control 1</button>
+            <button>control 1</button>
+        </section>
+    {{/if}}
+
+    <ul>
+        {{#each pelis}}
+        <li>{{@index}} {{this.year}} {{this.title}} ({{this.rate}})</li>
+        {{/each}}
+    </ul>
+</body>
+
+</html>
