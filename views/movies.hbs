@@ -34,7 +34,8 @@
 
     <ul>
         {{#each pelis}}
-        <li>{{@index}} {{this.year}} {{this.title}} ({{this.rate}})</li>
+        {{!-- <li>{{@index}} {{this.year}} {{this.title}} ({{this.rate}})</li> --}}
+        <li><a href="/movieDetail/{{this._id}}">{{this.title}}</a> ({{this.rate}})</li>
         {{/each}}
     </ul>
 </body>

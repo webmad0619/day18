@@ -7,6 +7,7 @@
 const express = require("express")
 const mongoose = require("mongoose")
 const hbs = require('hbs');
+const bodyParser = require('body-parser');
 const app = express()
 const PORT = 3000
 mongoose.connect('mongodb://localhost/movies');
@@ -14,10 +15,16 @@ mongoose.connection.on('connected', () => {
     console.log('Mongoose default connection open');
 });
 
+// middleware configs that will run prior the URL load
 app.use(express.static('public'));
 app.set('views', __dirname + '/views');
 app.set('view engine', 'hbs');
 hbs.registerPartials(__dirname + '/views/partials');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(myFakeMiddleware)
+app.use(dateOutputterLogger)
+app.use(loginAcceptedChecker)
 
 // 2. mongoose models and schemas
 const schema = {
@@ -29,11 +36,42 @@ const schema = {
     rate: Number
 }
 
+function dateOutputterLogger(_, _, next) {
+    console.log(new Date())
+    next();
+}
+
+function myFakeMiddleware(_, _, next) {
+    console.log("endpoint was called");
+    //call to my google analytics service! :)
+    next();
+}
+
+function loginAcceptedChecker(_, _, next) {
+    console.log("endpoint was called");
+    //call to my google analytics service! :)
+    next();
+}
+
 const Movie = mongoose.model('movie', schema);
 const Cat = mongoose.model('cat', { name: String });
 
 // 3. routes
 // this is an endpoint
+app.get("/new-cat-form-page", (req, res) => {
+    console.log("i am inside new cat form page")
+    res.render('new-cat-form-page')
+})
+
+app.post("/new-cat-form", (req, res) => {
+    Cat
+        .create({ name: req.body.nombreGato })
+        .then((catData) => {
+            res.json(catData)
+        })
+        .catch()
+})
+
 app.get("/new-cat", (req, res) => {
     log()
 
@@ -132,6 +170,14 @@ app.get("/displayAllMoviesInHandlebars/:order", (req, res) => {
             // res.render("handleBarsView", < dataForTheView >)
 
             res.render("movies", { isAdmin: true, isEditor: false, mediaEnSpanish: averageCalculated, pelis: moviesLoadedFromMongo, ...filter })
+        })
+})
+
+app.get("/movieDetail/:movieID", (req, res) => {
+    Movie
+        .findById(req.params.movieID)
+        .then(movieFound => {
+            res.render("movieDetail", movieFound)
         })
 })
 
